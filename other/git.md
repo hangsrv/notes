@@ -117,6 +117,7 @@ git diff --cached
 
 # 重置版本
 git reset --soft [commithash]
+git reset --hard [commithash]
 
 # 分支操作
 git branch [分支名]
