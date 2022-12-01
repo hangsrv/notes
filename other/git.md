@@ -126,6 +126,8 @@ git branch -d [分支名]
 
 # 切换到指定的分支
 git checkout [分支名]
+git checkout [指定版本]
+git switch -
 
 # 合并分支：推荐使用rebase
 git merge [要合并分支名]
