@@ -20,6 +20,9 @@ docker network ls
 docker network inspect <name>
 docker network rm <name>
 docker network create <name>
+
+# 容器打包镜像
+docker commit A B
 ```
 
 # dockerfile
