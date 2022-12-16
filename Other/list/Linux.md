@@ -112,34 +112,6 @@ python3 -m http.server <port>
 python -m SimpleHTTPServer <port>
 ```
 
-* iterm2
-
-```shell
-# iterm2
-brew install cask iterm2
-brew install autojump
-
-# 安装 oh-my-zsh
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-# 终端代码提示
-git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
-# 主题
-git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-
-# 修改配置文件
-vim ~/.zshrc
-ZSH_THEME="powerlevel10k/powerlevel10k"
-plugins=(zsh-autosuggestions git)
-
-# 设置字体
-Preferences -> Profiles -> Text -> Use built-in Powerline glyphs
-
-# session bar
-Appearance -> General -> Theme -> Minimal
-Profiles -> Session -> Status bar enabled
-Profiles -> Window -> Backgroud Image
-```
-
 * vim
 
 ```shell
@@ -158,13 +130,13 @@ colorscheme dracula
 * apt-get
 
 ```shell
-apt-get update
-apt-get install telnet
-apt-get install curl
-apt-get install net-tools
-apt-get install vim
-apt-get install inetutils-ping
-apt-get install openssh-server
-apt-get install openssh-client
-apt-get install systemctl
+apt-get update -y
+apt-get upgrade -y
+apt-get install telnet -y
+apt-get install curl -y
+apt-get install net-tools -y
+apt-get install vim -y
+apt-get install inetutils-ping -y
+apt-get install openssh-server -y
+apt-get install systemctl -y
 ```
