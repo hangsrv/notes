@@ -44,24 +44,40 @@ ENTRYPOINT：镜像中应用的启动命令，运行时调用
 ## 使用案例
 
 ```shell
-# 指定基础镜像
+# 基础镜像使用
 FROM ubuntu:16.04
+# 作者
+MAINTAINER hang
 # 配置环境变量
 ENV JAVA_DIR=/usr/local
-# 拷贝文件
-COPY ./jdk8.tar.gz $JAVA_DIR/
-COPY ./demo.jar /tmp/app.jar
+# jar包
+COPY ./jdk-8u202.tar.gz $JAVA_DIR/
 # 安装JDK
 RUN cd $JAVA_DIR \
-  && tar -xf ./jdk8.tar.gz \
-  && mv ./jdk1.8.0_144 ./java8
+  && tar -zxvf ./jdk-8u202.tar.gz \
+  && mv ./jdk1.8.0_202 ./java8
 # 配置环境变量
 ENV JAVA_HOME=$JAVA_DIR/java8
-ENV PATH=$PATH:JAVA_HOME/bin
+ENV PATH=$PATH:$JAVA_HOME/bin
+# 拷贝项目
+COPY ./health_backend/target/health_backend-1.0-SNAPSHOT.jar /tmp/health_backend.jar
+COPY ./health_service_provider/target/health_service_provider-1.0-SNAPSHOT.jar /tmp/health_service_provider.jar
+COPY ./health_mobile/target/health_mobile-1.0-SNAPSHOT.jar /tmp/health_mobile.jar
+COPY ./start.sh /tmp/start.sh
+# 赋予文件权限并运行start.sh脚本
+RUN chmod +x /tmp/start.sh
+ENTRYPOINT ["sh","/tmp/start.sh"]
 # 暴露端口
-EXPOSE 8080
-# 启动
-ENTRYPOINT java -jar /tmp/app.jar
+EXPOSE 80
+EXPOSE 81
+EXPOSE 82
+```
+
+```shell
+#!/bin/sh
+nohup java -jar /tmp/health_backend.jar  > /tmp/health_backend.log &
+nohup java -jar /tmp/health_service_provider.jar  > /tmp/health_service_provider.log &
+nohup java -jar /tmp/health_mobile.jar  > /tmp/health_mobile.log
 ```
 
 # docker-compose
@@ -69,26 +85,38 @@ ENTRYPOINT java -jar /tmp/app.jar
 ```yaml
 version: '3'
 services:
-
-  redis:
-    container_name: redis
+  health-redis:
     image: redis
+    container_name: health-redis
+    network_mode: bridge
+    hostname: health-redis
     ports:
       - 6379:6379
-  mysql:
-    container_name: mysql
+  health-mysql:
     image: mysql
+    container_name: health-mysql
+    network_mode: bridge
+    volumes:
+      - ./health.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - 3306:3306
     environment:
       - "MYSQL_ROOT_PASSWORD=123456"
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:management
+  health-zookeeper:
+    image: zookeeper
+    container_name: health-zookeeper
+    network_mode: bridge
     ports:
-      - 5672:5672
-      - 15672:15672
-    environment:
-      RABBITMQ_DEFAULT_USER: rabbit
-      RABBITMQ_DEFAULT_PASS: 123456
+      - 2181:2181
+  health-web:
+    network_mode: bridge
+    container_name: health-web
+    build: .
+    ports:
+      - 80:80
+      - 82:82
+    depends_on:
+      - health-redis
+      - health-mysql
+      - health-zookeeper
 ```

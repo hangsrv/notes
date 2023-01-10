@@ -25,3 +25,15 @@ todo自学
 * ElasticSearch
 * MySQL
 * Redis
+
+server、client
+router
+client status
+
+1. TCP or UDP
+2. 黏包 和 粘包问题
+3. 消息ID redis自增（uid、gid）
+4. 序列化协议：JSON、protobuf
+5. 心跳保活：NAT超时、网络状态切换、DHCP租期到期  启动一个定时任务 定时发送消息 定时器重置 消息发送失败
+6. 好友状态：正向好友信息 反向好友信息 server主动通知client 群聊采用pull的模式
+7. 消息传递：写扩散 读扩散 群聊消息合并推送 bitmap实现消息已读 定时批量ack消息
